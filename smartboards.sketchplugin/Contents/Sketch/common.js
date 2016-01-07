@@ -12,7 +12,7 @@ var align = function(context, shouldRename) {
 var doc = context.document;
 
 // options
-var PADDING = 100;
+var PADDING = 150;
 
 // Get all the artboards on the current page.
 var artboards = [[doc currentPage] artboards];
@@ -21,7 +21,8 @@ var page = [doc currentPage];
 // Variables to figure out the names (letter for row, number for column).
 var currentRow = -1;
 var currentColumn = -1;
-var lastTop = -10000000000000000000;
+var MINIMUM_NUMBER = -10000000000000000000;
+var lastTop = MINIMUM_NUMBER;
 
 // Set up the artboards object.
 var artboardsMeta = [];
@@ -55,8 +56,7 @@ artboardsMeta.sort(function(a, b) {
   return a.left - b.left;
 });
 
-// artboard object with
-var artboardRows = [];
+var currentMaxHeight = MINIMUM_NUMBER, currentY = 0;
 
 // Align artboards to grid, assign names.
 for (var i = 0; i < artboardsMeta.length; ++i) {
@@ -67,11 +67,26 @@ for (var i = 0; i < artboardsMeta.length; ++i) {
   var name = obj.name;
 
   var artboard = artboardsMeta[i];
-  if (artboard.top > lastTop) {
+
+  if (artboard.top !== lastTop) {
     ++currentRow;
     currentColumn = 0;
-    lastTop = artboard.top;
+
+    currentY = currentRow === 0 ? artboard.top : (currentMaxHeight + currentY + PADDING)
+    
+    // alertUI(
+    //   "currentRow: " + currentRow + 
+    //   "\ncurrentMaxHeight: " + currentMaxHeight + 
+    //   "\nlastTop: " + lastTop + 
+    //   "\n" + name + " setY: " + currentY)
+
+    currentMaxHeight = MINIMUM_NUMBER
+    lastTop = artboard.top
+  } else {
+
   }
+
+  currentMaxHeight = currentMaxHeight > height ? currentMaxHeight : height
 
   if(shouldRename) {
     // Get the letter for the row
@@ -100,7 +115,7 @@ for (var i = 0; i < artboardsMeta.length; ++i) {
   var artboardInternal = artboard.artboard;
   var frame = [artboardInternal frame];
   [frame setX: currentColumn * (artboard.width + PADDING)];
-  [frame setY: currentRow * (artboard.height + PADDING)];
+  [frame setY: currentY];
 
   ++currentColumn;
 }
@@ -130,6 +145,13 @@ layersList.sort(function(a, b){
   }
   return 0
 });
+
+// Alert
+function alertUI(msg) {
+  var alert = COSAlertWindow.new();
+  alert.setMessageText(msg);
+  alert.runModal();
+}
 
 // Helper function to add artboards.
 function addArtboard(page, artboard) {
