@@ -16,6 +16,13 @@
       "identifier" : "align-and-rename"
     },
     {
+      "script" : "align-and-rename-reverse.js",
+      "handler" : "onRun",
+      "name" : "Align and Number (Reverse)",
+      "shortcut": "",
+      "identifier" : "align-and-rename-reverse"
+    },
+    {
       "script" : "batch-custom-rename.js",
       "handler" : "onRun",
       "shortcut" : "cmd alt R",

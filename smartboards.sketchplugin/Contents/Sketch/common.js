@@ -5,7 +5,7 @@ var renameArtboard = function(artboardObject, finalName) {
   [artboardObject setName:finalName];
 }
 
-var align = function(context, shouldRename) {
+var align = function(context, shouldRename, reverse) {
 
 // Organize artboards by row and column and rename for alphabetical sort.
 
@@ -145,6 +145,10 @@ layersList.sort(function(a, b){
   }
   return 0
 });
+
+if (reverse) {
+  layersList.reverse()
+}
 
 // Alert
 function alertUI(msg) {
